@@ -65,6 +65,8 @@ jobs:
           $env:CI = 'true'
           & "$stage/install-windows.bat"
           if ($LASTEXITCODE -ne 0) { throw "installer exit $LASTEXITCODE" }
+          Write-Host '--- stage/dist/win ---'; Get-ChildItem "$stage/dist/win" | Select-Object -First 8 Name
+          Write-Host '--- DEST ---'; Get-ChildItem "$env:LOCALAPPDATA/Font Manage" -ErrorAction SilentlyContinue | Select-Object -First 12 Name
           if (-not (Test-Path "$env:LOCALAPPDATA/Font Manage/font-workspace.exe")) { throw 'engine not installed' }
           if (-not (Test-Path "$env:USERPROFILE/Desktop/Font Manage.lnk")) { throw 'shortcut missing' }
           if (-not (Test-Path "$env:LOCALAPPDATA/Font Manage/Font Manage.cmd")) { throw 'launcher missing' }
