@@ -1,0 +1,16 @@
+{
+  "name": "font-manage-affinity",
+  "version": "0.3.2",
+  "private": true,
+  "description": "Compact macOS font workspace with an Affinity scripting adapter",
+  "scripts": {
+    "build": "node scripts/build-workspace.cjs",
+    "start": "node scripts/start.cjs",
+    "check": "node --check web/app.js && node --check web/model.mjs && node --check server/server.cjs && node --check server/store.cjs && node --check server/affinity-mcp.cjs && node --check server/affinity-host.cjs && node --check server/affinity-script.cjs && node --check scripts/start.cjs && node --check scripts/build-workspace.cjs && node --check scripts/host-smoke-mcp.cjs && node --check src/bridge.js",
+    "test": "node --test tests/*.test.cjs",
+    "test:ui": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1"
+  }
+}

@@ -1,0 +1,13 @@
+node_modules/
+dist/
+private/
+data/
+playwright-report/
+test-results/
+.DS_Store
+*.log
+PROJECT.md
+PRODUCT.md
+DESIGN.md
+VALIDATION.md
+docs/ACCEPTANCE-*.md

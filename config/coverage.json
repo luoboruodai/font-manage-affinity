@@ -1,0 +1,49 @@
+{
+  "excludePostScript": ["LastResort", ".LastResort", "Undefined", "AlibabaHealthFont20BRAILLE-A", "AlibabaHealthFont20BRAILLE-B", "AlibabaHealthFont20BRAILLE-C", "AlibabaHealthFont20BRAILLE-D", "AlibabaHealthFont20BRAILLE-E", "AlibabaHealthFont20BRAILLE-F", "AlibabaHealthFont20BRAILLE-G", "AlibabaHealthFont20BRAILLE-H"],
+  "languages": {
+    "latin": {
+      "core": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+      "common": "éèáàñüçøæß.,!?–",
+      "minCore": 1,
+      "minOverall": 0.82
+    },
+    "zh-Hans": {
+      "core": "简体中文美术设计字体字形世界春夏秋冬山水风天地台湾电脑软件资讯图书馆学习国语这里来说话视频开发",
+      "common": "美丽错误。，、！？「」《》〈〉【】〔〕",
+      "minCore": 0.75,
+      "minOverall": 0.73
+    },
+    "zh-Hant": {
+      "core": "繁體中文美術設計字體字形世界春夏秋冬山水風天地臺灣電腦軟體資訊圖書館學習國語這裡來說話視頻開發",
+      "common": "美麗錯誤。，、！？「」《》〈〉【】〔〕",
+      "minCore": 0.75,
+      "minOverall": 0.73
+    },
+    "ja": {
+      "core": "あいうえおかきくけこさしすせそアイウエオカキクケコサシスセソ",
+      "common": "日本語文字。、！？「」",
+      "minCore": 0.85,
+      "minOverall": 0.8,
+      "requiredScript": "kana"
+    },
+    "ko": {
+      "core": "가나다라마바사아자차카타파하한국어글꼴한글서울",
+      "common": ".,!?·「」",
+      "minCore": 0.85,
+      "minOverall": 0.76,
+      "requiredScript": "hangul"
+    },
+    "numbers": {
+      "core": "0123456789",
+      "common": ".,:−-%+×÷€$¥",
+      "minCore": 1,
+      "minOverall": 0.68
+    },
+    "symbols": {
+      "core": "&@#%+−=→★◆♫",
+      "common": "±×÷∞✓©™",
+      "minCore": 0.55,
+      "minOverall": 0.55
+    }
+  }
+}
