@@ -3,12 +3,13 @@ rem Font Manage 安装器（Windows）— 双击运行：安装到 %%LOCALAPPDAT
 setlocal EnableExtensions
 cd /d "%~dp0"
 set "SRC=%~dp0"
-if exist "%SRC%dist\win\font-workspace.exe" set "SRC=%SRC%dist\win\"
-if not exist "%SRC%font-workspace.exe" if exist "%SRC%..\dist\win\font-workspace.exe" (
-  set "SRC=%SRC%..\dist\win\"
+if "%SRC:~-1%"=="\" set "SRC=%SRC:~0,-1%"
+if exist "%SRC%\dist\win\font-workspace.exe" set "SRC=%SRC%\dist\win"
+if not exist "%SRC%\font-workspace.exe" if exist "%SRC%\..\dist\win\font-workspace.exe" (
+  set "SRC=%SRC%\..\dist\win"
   for %%I in ("%SRC%\..\..") do set "ROOT=%%~fI"
 )
-if not exist "%SRC%font-workspace.exe" (
+if not exist "%SRC%\font-workspace.exe" (
   echo 未找到 font-workspace.exe。请在解压后的发布文件夹内双击运行本脚本。
   if not "%CI%"=="true" pause
   exit /b 1
