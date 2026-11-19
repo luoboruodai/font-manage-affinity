@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0-alpha (2026-11-19, Windows preview)
+
+- Windows font engine (C#/WPF): same JSON Lines protocol as the macOS engine — enumeration, PostScript names, core-coverage evaluation, fallback-free GlyphRun PNG previews. 与 macOS 引擎同协议的 Windows 字体引擎。
+- Windows shell (WebView2): single instance, window placement persistence, close-save handshake. WebView2 外壳。
+- Verified on real Windows via GitHub Actions (font enumeration, Arial/YaHei coverage assertions, PNG decode, Node unit tests); Affinity connection on Windows not yet verified. 经真实 Windows CI 验证；Affinity 连接未实测。
+
 ## 0.3.2 (2026-11-19)
 
 - Split Chinese into Simplified (`zh-Hans`) and Traditional (`zh-Hant`) types with independent core/regular character sets and thresholds; fonts may carry both labels. 中文拆分为简体/繁体独立类型，多标签。

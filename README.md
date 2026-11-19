@@ -16,7 +16,8 @@ A compact font manager for **Affinity on macOS**: browse real CoreText-rendered 
 
 ## Requirements / 环境要求
 
-- **macOS only / 仅支持 macOS**（当前版本；**Windows 暂不支持**）。
+- **macOS**: fully verified release. **macOS：完整验证的正式版。**
+- **Windows**: `v0.4.0-alpha` preview — the font engine and shell are verified on real Windows via CI (enumeration, coverage, preview rendering); the Affinity connection has **not** been verified on Windows yet. **Windows：预览版（引擎与外壳经真实 Windows CI 验证；Affinity 连接尚未在 Windows 实测）。**
 - Affinity (v3) with its local MCP scripting interface enabled / 启用本机 MCP 脚本接口的 Affinity 3。
 - Node.js available on `PATH`（应用包不内置 Node 运行时）。
 
@@ -25,6 +26,10 @@ A compact font manager for **Affinity on macOS**: browse real CoreText-rendered 
 1. Download `Font-Manage-<version>-macos.zip` from the [latest release](../../releases/latest) and unzip. 从最新 Release 下载并解压。
 2. The app is ad-hoc signed only; on first launch, right-click → **Open** (or run `xattr -dr com.apple.quarantine "Font Manage.app"`). 应用未做公证，首次打开请右键选择“打开”。
 3. Open `Font Manage.app`. It starts its local service, connects to Affinity automatically and reuses a single instance. 打开应用即可自动连接 Affinity，重复打开复用同一实例。
+
+### Windows preview / Windows 预览
+
+Download `Font-Manage-0.4.0-windows-alpha.zip` from the [v0.4.0-alpha prerelease](../../releases/tag/v0.4.0-alpha), unzip anywhere, and run `node scripts/start.cjs` (requires Node.js on PATH). The bundle is self-contained (no .NET install needed); the WebView2 runtime ships with current Windows 10/11. 从 v0.4.0-alpha 预发布下载解压，在 PATH 有 Node.js 的前提下运行 `node scripts/start.cjs`；引擎与外壳为自包含单文件，无需安装 .NET。
 
 ## Build from source / 从源码构建
 
