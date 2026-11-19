@@ -58,7 +58,10 @@ jobs:
           $stage = Join-Path $env:RUNNER_TEMP 'installer-test'
           New-Item -ItemType Directory -Force "$stage" | Out-Null
           New-Item -ItemType Directory -Force "$stage/dist" | Out-Null
+          Write-Host "cwd=$((Get-Location).Path) src-exists=$(Test-Path dist/win/font-workspace.exe)"
           Copy-Item dist/win "$stage/dist/win" -Recurse
+          Write-Host "staged-exe=$(Test-Path "$stage/dist/win/font-workspace.exe")"
+          Get-ChildItem $stage -Recurse -Depth 2 | Select-Object -First 20 FullName
           foreach ($d in 'server','web','config','scripts','src') { Copy-Item $d "$stage/$d" -Recurse }
           Copy-Item package.json "$stage/"
           Copy-Item scripts/install-windows.bat "$stage/install-windows.bat"
