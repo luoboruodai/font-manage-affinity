@@ -15,8 +15,8 @@ jobs:
           dotnet-version: '8.0.x'
       - name: Publish Windows engine and shell
         run: |
-          dotnet publish native/win/FontEngine -c Release -o native/win/publish/engine
-          dotnet publish native/win/FontShell -c Release -o native/win/publish/shell
+          dotnet publish native/win/FontEngine -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o native/win/publish/engine
+          dotnet publish native/win/FontShell -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o native/win/publish/shell
       - name: Assemble dist/win
         shell: pwsh
         run: |
