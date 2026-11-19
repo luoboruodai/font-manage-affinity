@@ -4,6 +4,10 @@ setlocal EnableExtensions
 cd /d "%~dp0"
 set "SRC=%~dp0"
 if exist "%SRC%dist\win\font-workspace.exe" set "SRC=%SRC%dist\win"
+if not exist "%SRC%font-workspace.exe" if exist "%SRC%..\dist\win\font-workspace.exe" (
+  set "SRC=%SRC%..\dist\win"
+  for %%I in ("%SRC%\..\..") do set "ROOT=%%~fI"
+)
 if not exist "%SRC%font-workspace.exe" (
   echo 未找到 font-workspace.exe。请在解压后的发布文件夹内双击运行本脚本。
   if not "%CI%"=="true" pause
@@ -19,9 +23,11 @@ if not exist "C:\Program Files\Affinity" if not exist "%LOCALAPPDATA%\Programs\A
 set "DEST=%LOCALAPPDATA%\Font Manage"
 if not exist "%DEST%" mkdir "%DEST%"
 robocopy "%SRC%" "%DEST%" /E /NFL /NDL /NJH /NJS >nul
-rem 服务器与网页资源在发布包的上一级（zip 根），一并安装
-for %%D in (server web config scripts src) do if exist "%~dp0%%D" robocopy "%~dp0%%D" "%DEST%\%%D" /E /NFL /NDL /NJH /NJS >nul
-if exist "%~dp0package.json" copy /y "%~dp0package.json" "%DEST%\" >nul
+rem 服务器与网页资源在发布包根（zip 根或脚本上级目录），一并安装
+if not defined ROOT set "ROOT=%~dp0"
+if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"
+for %%D in (server web config scripts src) do if exist "%ROOT%\%%D" robocopy "%ROOT%\%%D" "%DEST%\%%D" /E /NFL /NDL /NJH /NJS >nul
+if exist "%ROOT%\package.json" copy /y "%ROOT%\package.json" "%DEST%\" >nul
 > "%DEST%\Font Manage.cmd" echo @echo off
 >> "%DEST%\Font Manage.cmd" echo node "%DEST%\scripts\start.cjs"
 powershell -NoProfile -Command "$ws = New-Object -ComObject WScript.Shell; $sc = $ws.CreateShortcut([IO.Path]::Combine($env:USERPROFILE, 'Desktop', 'Font Manage.lnk')); $sc.TargetPath = '%DEST%\Font Manage.cmd'; $sc.WorkingDirectory = '%DEST%'; $sc.Description = 'Font Manage for Affinity'; $sc.Save()"

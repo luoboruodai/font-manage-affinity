@@ -57,11 +57,13 @@ jobs:
         run: |
           $stage = Join-Path $env:RUNNER_TEMP 'installer-test'
           New-Item -ItemType Directory -Force "$stage" | Out-Null
-          Copy-Item dist/win "$stage/win" -Recurse
+          New-Item -ItemType Directory -Force "$stage/dist" | Out-Null
+          Copy-Item dist/win "$stage/dist/win" -Recurse
           foreach ($d in 'server','web','config','scripts','src') { Copy-Item $d "$stage/$d" -Recurse }
           Copy-Item package.json "$stage/"
+          Copy-Item scripts/install-windows.bat "$stage/install-windows.bat"
           $env:CI = 'true'
-          & "$stage/scripts/install-windows.bat"
+          & "$stage/install-windows.bat"
           if ($LASTEXITCODE -ne 0) { throw "installer exit $LASTEXITCODE" }
           if (-not (Test-Path "$env:LOCALAPPDATA/Font Manage/font-workspace.exe")) { throw 'engine not installed' }
           if (-not (Test-Path "$env:USERPROFILE/Desktop/Font Manage.lnk")) { throw 'shortcut missing' }
