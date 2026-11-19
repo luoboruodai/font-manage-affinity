@@ -13,3 +13,4 @@ VALIDATION.md
 docs/ACCEPTANCE-*.md
 native/win/**/bin/
 native/win/**/obj/
+native/win/publish/

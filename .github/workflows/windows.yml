@@ -13,18 +13,16 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - name: Build Windows engine and shell
+      - name: Publish Windows engine and shell
         run: |
-          dotnet build native/win/FontEngine -c Release
-          dotnet build native/win/FontShell -c Release
+          dotnet publish native/win/FontEngine -c Release -o native/win/publish/engine
+          dotnet publish native/win/FontShell -c Release -o native/win/publish/shell
       - name: Assemble dist/win
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force dist/win | Out-Null
-          Copy-Item native/win/FontEngine/bin/Release/net8.0-windows/font-engine.exe dist/win/
-          Copy-Item native/win/FontShell/bin/Release/net8.0-windows/font-workspace.exe dist/win/
-          Copy-Item native/win/FontShell/bin/Release/net8.0-windows/*.dll dist/win/ -ErrorAction SilentlyContinue
-          Copy-Item native/win/FontShell/bin/Release/net8.0-windows/WebView2Loader.dll dist/win/ -ErrorAction SilentlyContinue
+          Copy-Item native/win/publish/engine/* dist/win/
+          Copy-Item native/win/publish/shell/* dist/win/
       - name: Font engine smoke (real Windows fonts)
         shell: pwsh
         run: |
