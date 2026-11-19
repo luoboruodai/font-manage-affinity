@@ -17,6 +17,7 @@ internal static class Program
     private static List<Face> Faces;
     private static readonly Dictionary<string, Face> ById = new Dictionary<string, Face>(StringComparer.OrdinalIgnoreCase);
 
+    [STAThread]
     private static int Main()
     {
         Console.OutputEncoding = new UTF8Encoding(false);
@@ -37,7 +38,7 @@ internal static class Program
                 reply = op switch
                 {
                     "fonts" => CatalogReply(),
-                    "preview" => Preview.Reply(req, ById),
+                    "preview" => PreviewSafe(req),
                     _ => new Dictionary<string, object> { ["error"] = "unknown op" }
                 };
                 if (req.TryGetProperty("seq", out var seq)) reply["seq"] = seq.ValueKind == JsonValueKind.Number ? seq.GetInt64() : seq.GetString();
@@ -50,6 +51,21 @@ internal static class Program
             Console.Out.Flush();
         }
         return 0;
+    }
+
+    private static Dictionary<string, object> PreviewSafe(JsonElement req)
+    {
+        try { return Preview.Reply(req, ById); }
+        catch (Exception e)
+        {
+            var id = req.TryGetProperty("id", out var i) ? i.GetString() : "";
+            return new Dictionary<string, object>
+            {
+                ["id"] = id, ["actualPostscript"] = id, ["png"] = null,
+                ["missing"] = new List<string>(), ["fallback"] = new List<string>(),
+                ["loadError"] = e.GetType().Name + ": " + e.Message
+            };
+        }
     }
 
     private static Dictionary<string, object> CatalogReply()

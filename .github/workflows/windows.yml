@@ -36,8 +36,9 @@ jobs:
           if (-not $yahei) { throw 'Microsoft YaHei not found' }
           if (-not $yahei.coverage.'zh-Hans'.supported) { throw 'YaHei zh-Hans not supported' }
           if (-not $yahei.coverage.'zh-Hant'.supported) { throw 'YaHei zh-Hant not supported' }
-          $previewOut = '{"seq":2,"op":"preview","id":"ArialMT","text":"Test 123","size":28,"width":360,"scale":2,"mode":"wrap"}' | & dist/win/font-engine.exe | ConvertFrom-Json
-          if (-not $previewOut.png) { throw 'no preview png' }
+          $previewRaw = '{"seq":2,"op":"preview","id":"ArialMT","text":"Test 123","size":28,"width":360,"scale":2,"mode":"wrap"}' | & dist/win/font-engine.exe
+          $previewOut = $previewRaw | ConvertFrom-Json
+          if (-not $previewOut.png) { throw "no preview png: $previewRaw" }
           $bytes = [Convert]::FromBase64String($previewOut.png)
           if ($bytes.Length -lt 100 -or $bytes[0] -ne 0x89 -or $bytes[1] -ne 0x50) { throw 'invalid PNG' }
           $cjk = '{"seq":3,"op":"preview","id":"MicrosoftYaHei","text":"简体中文之美","size":28,"width":360,"scale":2,"mode":"wrap"}' | & dist/win/font-engine.exe | ConvertFrom-Json
