@@ -6,10 +6,14 @@ const { spawn, execFileSync } = require('node:child_process');
 const readline = require('node:readline');
 
 const root = path.resolve(__dirname, '..');
-const windowBinary = path.join(root, 'dist', 'font-workspace');
+const isWindows = process.platform === 'win32';
+const windowBinary = isWindows
+  ? path.join(root, 'dist', 'win', 'font-workspace.exe')
+  : path.join(root, 'dist', 'font-workspace');
 const dataDir = process.env.FONT_MANAGE_DATA || path.join(root, 'data');
-if (!fs.existsSync(windowBinary) || !fs.existsSync(path.join(root, 'dist', 'font-engine'))) {
-  console.error('请先构建 Font Manage：node scripts/build-workspace.cjs');
+const engineBinary = isWindows ? path.join(root, 'dist', 'win', 'font-engine.exe') : path.join(root, 'dist', 'font-engine');
+if (!fs.existsSync(windowBinary) || !fs.existsSync(engineBinary)) {
+  console.error(isWindows ? '缺少 Windows 构建产物 dist/win/，请先在 Windows 或 CI 上构建。' : '请先构建 Font Manage：node scripts/build-workspace.cjs');
   process.exit(1);
 }
 fs.mkdirSync(dataDir, { recursive: true });
@@ -22,7 +26,7 @@ function reuseExisting() {
   try {
     const lock = JSON.parse(fs.readFileSync(lockFile, 'utf8'));
     if (!running(lock.pid)) return false;
-    try { execFileSync('/usr/bin/open', ['-b', 'local.fontmanage.workspace'], { stdio: 'ignore' }); } catch {}
+    if (!isWindows) { try { execFileSync('/usr/bin/open', ['-b', 'local.fontmanage.workspace'], { stdio: 'ignore' }); } catch {} }
     return true;
   } catch {
     try { fs.unlinkSync(lockFile); } catch {}

@@ -8,7 +8,10 @@ const ROOT = path.resolve(__dirname, '..'), DATA = process.env.FONT_MANAGE_DATA 
 const HOST_ENABLED = process.env.FONT_MANAGE_DISABLE_HOST !== '1';
 const store = new Store(DATA);
 const affinity = new AffinityHost({ root: ROOT, dataDir: DATA, getSettings: () => store.settings });
-const engine = spawn(path.join(ROOT, 'dist', 'font-engine'), [], { stdio: ['pipe', 'pipe', 'pipe'] });
+const engineBinary = process.platform === 'win32'
+  ? path.join(ROOT, 'dist', 'win', 'font-engine.exe')
+  : path.join(ROOT, 'dist', 'font-engine');
+const engine = spawn(engineBinary, [], { stdio: ['pipe', 'pipe', 'pipe'] });
 let seq = 0;
 const pending = new Map();
 readline.createInterface({ input: engine.stdout }).on('line', line => {

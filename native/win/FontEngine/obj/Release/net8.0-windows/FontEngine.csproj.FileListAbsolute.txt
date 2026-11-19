@@ -1,0 +1,15 @@
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/obj/Release/net8.0-windows/FontEngine.GeneratedMSBuildEditorConfig.editorconfig
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/obj/Release/net8.0-windows/FontEngine.AssemblyInfoInputs.cache
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/obj/Release/net8.0-windows/FontEngine.AssemblyInfo.cs
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/obj/Release/net8.0-windows/FontEngine.csproj.CoreCompileInputs.cache
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/obj/Release/net8.0-windows/FontEngine.sourcelink.json
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/bin/Release/net8.0-windows/font-engine
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/bin/Release/net8.0-windows/font-engine.deps.json
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/bin/Release/net8.0-windows/font-engine.runtimeconfig.json
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/bin/Release/net8.0-windows/font-engine.dll
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/bin/Release/net8.0-windows/font-engine.pdb
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/obj/Release/net8.0-windows/font-engine.dll
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/obj/Release/net8.0-windows/refint/font-engine.dll
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/obj/Release/net8.0-windows/font-engine.pdb
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/obj/Release/net8.0-windows/FontEngine.genruntimeconfig.cache
+/Users/vibecoding_prj/affinity 字体管理脚本/native/win/FontEngine/obj/Release/net8.0-windows/ref/font-engine.dll
