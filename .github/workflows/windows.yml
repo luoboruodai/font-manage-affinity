@@ -6,6 +6,9 @@ on:
     tags: ['v0.4.0-alpha']
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-and-smoke:
     runs-on: windows-latest
