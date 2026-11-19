@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.3 (2026-11-19)
+
+- Double-click installer for macOS: `install-macos.command` checks Node.js, removes quarantine, installs to /Applications, adds a Desktop shortcut and launches. macOS 双击安装脚本。
+- Windows installer `install-windows.bat` (in the Windows alpha bundle) installs to %LOCALAPPDATA% and adds a Desktop shortcut; verified on real Windows in CI. Windows 双击安装脚本（CI 实测）。
+
+## 0.4.1-alpha (2026-11-19, Windows preview)
+
+- Bundle now includes the double-click `install-windows.bat` at the zip root; the installer itself is executed and verified on real Windows in CI. 发布包根目录附带双击安装脚本，CI 真实执行验证。
+
 ## 0.4.0-alpha (2026-11-19, Windows preview)
 
 - Windows font engine (C#/WPF): same JSON Lines protocol as the macOS engine — enumeration, PostScript names, core-coverage evaluation, fallback-free GlyphRun PNG previews. 与 macOS 引擎同协议的 Windows 字体引擎。

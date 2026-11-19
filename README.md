@@ -24,12 +24,12 @@ A compact font manager for **Affinity on macOS**: browse real CoreText-rendered 
 ## Install / 安装
 
 1. Download `Font-Manage-<version>-macos.zip` from the [latest release](../../releases/latest) and unzip. 从最新 Release 下载并解压。
-2. The app is ad-hoc signed only; on first launch, right-click → **Open** (or run `xattr -dr com.apple.quarantine "Font Manage.app"`). 应用未做公证，首次打开请右键选择“打开”。
-3. Open `Font Manage.app`. It starts its local service, connects to Affinity automatically and reuses a single instance. 打开应用即可自动连接 Affinity，重复打开复用同一实例。
+2. Double-click `install-macos.command` — it checks Node.js, removes the quarantine flag, installs to `/Applications`, adds a Desktop shortcut and launches the app. 双击 `install-macos.command`：自动检查 Node.js、去除隔离属性、安装到 /Applications、创建桌面快捷方式并启动。
+3. Manual alternative: copy `Font Manage.app` anywhere, right-click → **Open** on first launch (ad-hoc signed only). 也可手动复制应用，首次打开右键选择“打开”。
 
 ### Windows preview / Windows 预览
 
-Download `Font-Manage-0.4.0-windows-alpha.zip` from the [v0.4.0-alpha prerelease](../../releases/tag/v0.4.0-alpha), unzip anywhere, and run `node scripts/start.cjs` (requires Node.js on PATH). The bundle is self-contained (no .NET install needed); the WebView2 runtime ships with current Windows 10/11. 从 v0.4.0-alpha 预发布下载解压，在 PATH 有 Node.js 的前提下运行 `node scripts/start.cjs`；引擎与外壳为自包含单文件，无需安装 .NET。
+Download `Font-Manage-0.4.1-windows-alpha.zip` from the [v0.4.1-alpha prerelease](../../releases/tag/v0.4.1-alpha), unzip, and double-click `install-windows.bat` — it checks Node.js, installs to `%LOCALAPPDATA%\Font Manage` and adds a Desktop shortcut. The bundle is self-contained (no .NET install needed); the WebView2 runtime ships with current Windows 10/11. 从 v0.4.1-alpha 预发布下载解压，双击 `install-windows.bat`：检查 Node.js、安装到 `%LOCALAPPDATA%\Font Manage` 并创建桌面快捷方式；自包含单文件，无需安装 .NET。
 
 ## Build from source / 从源码构建
 

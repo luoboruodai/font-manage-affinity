@@ -3,7 +3,7 @@ name: windows
 on:
   push:
     branches: [main]
-    tags: ['v0.4.0-alpha']
+    tags: ['v0.4.*-alpha']
   workflow_dispatch:
 
 permissions:
@@ -52,17 +52,33 @@ jobs:
         run: |
           npm ci
           npm test
+      - name: Verify the double-click installer
+        shell: pwsh
+        run: |
+          $stage = Join-Path $env:RUNNER_TEMP 'installer-test'
+          New-Item -ItemType Directory -Force "$stage" | Out-Null
+          Copy-Item dist/win "$stage/win" -Recurse
+          foreach ($d in 'server','web','config','scripts','src') { Copy-Item $d "$stage/$d" -Recurse }
+          Copy-Item package.json "$stage/"
+          $env:CI = 'true'
+          & "$stage/scripts/install-windows.bat"
+          if ($LASTEXITCODE -ne 0) { throw "installer exit $LASTEXITCODE" }
+          if (-not (Test-Path "$env:LOCALAPPDATA/Font Manage/font-workspace.exe")) { throw 'engine not installed' }
+          if (-not (Test-Path "$env:USERPROFILE/Desktop/Font Manage.lnk")) { throw 'shortcut missing' }
+          if (-not (Test-Path "$env:LOCALAPPDATA/Font Manage/Font Manage.cmd")) { throw 'launcher missing' }
+          Write-Host 'installer smoke OK'
       - name: Package Windows preview bundle
         shell: pwsh
         run: |
-          Compress-Archive -Path dist/win,server,web,config,scripts,src,package.json,README.md,LICENSE -DestinationPath Font-Manage-0.4.0-windows-alpha.zip -Force
+          Compress-Archive -Path dist/win,server,web,config,scripts,src,package.json,README.md,LICENSE -DestinationPath Font-Manage-0.4.1-windows-alpha.zip -Force
+          Compress-Archive -Path scripts/install-windows.bat -DestinationPath Font-Manage-0.4.1-windows-alpha.zip -Update
       - uses: actions/upload-artifact@v4
         with:
-          name: Font-Manage-0.4.0-windows-alpha
-          path: Font-Manage-0.4.0-windows-alpha.zip
+          name: Font-Manage-0.4.1-windows-alpha
+          path: Font-Manage-0.4.1-windows-alpha.zip
       - name: Publish prerelease
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create ${{ github.ref_name }} Font-Manage-0.4.0-windows-alpha.zip --prerelease --title "Font Manage 0.4.0-alpha (Windows preview)" --notes-file release-notes-windows.md || gh release upload ${{ github.ref_name }} Font-Manage-0.4.0-windows-alpha.zip --clobber
+          gh release create ${{ github.ref_name }} Font-Manage-0.4.1-windows-alpha.zip --prerelease --title "Font Manage ${{ github.ref_name }} (Windows preview)" --notes-file release-notes-windows.md || gh release upload ${{ github.ref_name }} Font-Manage-0.4.1-windows-alpha.zip --clobber
