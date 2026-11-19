@@ -422,9 +422,16 @@ internal static class Preview
                 foreach (var it in line.Items)
                 {
                     if (it.Glyph == 0) { allMissing.Add(it.Text); x += 0; continue; }
-                    var run = new GlyphRun { FontRenderingEmSize = line.Size, GlyphTypeface = glyph, BaselineOrigin = new Point(x, y + line.Size * face.Baseline) };
-                    run.AdvanceWidths.Add(it.Advance);
-                    run.GlyphIndices.Add((ushort)it.Glyph);
+                    var run = new GlyphRun(
+                        glyph,
+                        0,
+                        false,
+                        line.Size,
+                        1.0f,
+                        new ushort[] { it.Glyph },
+                        new Point(x, y + line.Size * face.Baseline),
+                        new double[] { it.Advance },
+                        null, null, null, null, null, null);
                     dc.DrawGlyphRun(brush, run);
                     x += it.Advance;
                 }
