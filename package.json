@@ -1,6 +1,6 @@
 {
   "name": "font-manage-affinity",
-  "version": "0.3.2",
+  "version": "1.0.0",
   "private": true,
   "description": "Compact macOS font workspace with an Affinity scripting adapter",
   "scripts": {

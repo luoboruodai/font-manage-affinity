@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0 (2026-11-19)
+
+- Unified release: macOS stable (fully verified on the maintainer's machine, including a real Affinity apply run) and Windows preview (engine/shell/installer verified on real Windows CI; Affinity link on Windows not yet verified).
+- Both bundles ship a double-click installer: `install-macos.command` (macOS) and `install-windows.bat` (Windows).
+- 统一发布：macOS 正式版（本机完整验证，含真实 Affinity 应用）与 Windows 预览版（引擎/外壳/安装器经真实 Windows CI 验证；Affinity 连接未实测），均附双击安装脚本。
+
 ## 0.3.3 (2026-11-19)
 
 - Double-click installer for macOS: `install-macos.command` checks Node.js, removes quarantine, installs to /Applications, adds a Desktop shortcut and launches. macOS 双击安装脚本。
