@@ -1,6 +1,6 @@
 'use strict';
 
-const DEFAULT_URL = 'http://[::1]:6767/sse';
+const DEFAULT_URL = 'http://127.0.0.1:6767/sse';
 const PROTOCOL_VERSION = '2025-11-25';
 
 class AffinityMCP {
