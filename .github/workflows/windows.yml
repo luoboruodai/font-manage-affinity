@@ -81,8 +81,20 @@ jobs:
           $zip = "Font-Manage-$version-windows-alpha.zip"
           "ZIP=$zip" >> $env:GITHUB_ENV
           "VERSION=$version" >> $env:GITHUB_ENV
-          Compress-Archive -Path dist/win,server,web,config,scripts,src,package.json,README.md,LICENSE -DestinationPath $zip -Force
-          Compress-Archive -Path scripts/install-windows.bat -DestinationPath $zip -Update
+          $root = Join-Path $env:RUNNER_TEMP 'release-root'
+          Remove-Item $root -Recurse -Force -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force "$root/dist" | Out-Null
+          Copy-Item dist/win "$root/dist/win" -Recurse
+          foreach ($d in 'server','web','config','scripts','src') { Copy-Item $d "$root/$d" -Recurse }
+          foreach ($f in 'package.json','README.md','LICENSE') { Copy-Item $f "$root/$f" }
+          Copy-Item scripts/install-windows.bat "$root/install-windows.bat"
+          Compress-Archive -Path "$root/*" -DestinationPath $zip -Force
+          $verify = Join-Path $env:RUNNER_TEMP 'package-verify'
+          Remove-Item $verify -Recurse -Force -ErrorAction SilentlyContinue
+          Expand-Archive $zip -DestinationPath $verify -Force
+          if (-not (Test-Path "$verify/dist/win/font-engine.exe")) { throw 'packaged engine missing' }
+          if (-not (Test-Path "$verify/dist/win/font-workspace.exe")) { throw 'packaged shell missing' }
+          if (-not (Test-Path "$verify/install-windows.bat")) { throw 'root installer missing' }
       - uses: actions/upload-artifact@v4
         with:
           name: Font-Manage-${{ env.VERSION }}-windows-alpha
