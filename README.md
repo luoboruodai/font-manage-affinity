@@ -24,14 +24,14 @@ A compact font manager for **Affinity on macOS**: browse real CoreText-rendered 
 ## Requirements / 环境要求
 
 - **macOS**: fully verified release. **macOS：完整验证的正式版。**
-- **Windows**: `v1.1.0-windows-alpha` preview — the font engine and shell are verified on real Windows via CI (enumeration, coverage, preview rendering, installer); the Affinity connection has **not** been verified on Windows yet. **Windows：预览版（引擎、外壳与安装器经真实 Windows CI 验证；Affinity 连接尚未在 Windows 实测）。**
+- **Windows**: `v1.1.1-windows-alpha` preview — the font engine and shell are verified on real Windows via CI (enumeration, coverage, preview rendering, installer); the Affinity connection has **not** been verified on Windows yet. **Windows：预览版（引擎、外壳与安装器经真实 Windows CI 验证；Affinity 连接尚未在 Windows 实测）。**
 - Affinity (v3) with its local MCP scripting interface enabled / 启用本机 MCP 脚本接口的 Affinity 3。
 - Node.js available on `PATH`（应用包不内置 Node 运行时）。
 
 ## Latest release / 最新发布
 
-- **macOS stable / macOS 正式版**：[Font Manage v1.1.0](../../releases/tag/v1.1.0) — verified on the maintainer's machine, including a real Affinity apply check. 本机完整验证，含真实 Affinity 应用检查。
-- **Windows preview / Windows 预览**：[v1.1.0-windows-alpha](../../releases/tag/v1.1.0-windows-alpha) — engine, shell and installer verified on real Windows CI; Affinity link not verified. 引擎、外壳与安装器经真实 Windows CI 验证；Affinity 连接未实测。
+- **macOS stable / macOS 正式版**：[Font Manage v1.1.1](../../releases/tag/v1.1.1) — verified on the maintainer's machine, including a real Affinity apply check. 本机完整验证，含真实 Affinity 应用检查。
+- **Windows preview / Windows 预览**：[v1.1.1-windows-alpha](../../releases/tag/v1.1.1-windows-alpha) — engine, shell and installer verified on real Windows CI; Affinity link not verified. 引擎、外壳与安装器经真实 Windows CI 验证；Affinity 连接未实测。
 
 ## Install / 安装
 
@@ -41,7 +41,7 @@ A compact font manager for **Affinity on macOS**: browse real CoreText-rendered 
 
 ### Windows preview / Windows 预览
 
-Download `Font-Manage-1.1.0-windows-alpha.zip` from the [v1.1.0-windows-alpha prerelease](../../releases/tag/v1.1.0-windows-alpha), unzip, and double-click `install-windows.bat` — it checks Node.js, installs to `%LOCALAPPDATA%\Font Manage` and adds a Desktop shortcut. The bundle is self-contained (no .NET install needed); the WebView2 runtime ships with current Windows 10/11. 从 v1.1.0-windows-alpha 预发布下载解压，双击 `install-windows.bat`：检查 Node.js、安装到 `%LOCALAPPDATA%\Font Manage` 并创建桌面快捷方式；自包含单文件，无需安装 .NET。
+Download `Font-Manage-1.1.1-windows-alpha.zip` from the [v1.1.1-windows-alpha prerelease](../../releases/tag/v1.1.1-windows-alpha), unzip, and double-click `install-windows.bat` — it checks Node.js, installs to `%LOCALAPPDATA%\Font Manage` and adds a Desktop shortcut. The bundle is self-contained (no .NET install needed); the WebView2 runtime ships with current Windows 10/11. 从 v1.1.1-windows-alpha 预发布下载解压，双击 `install-windows.bat`：检查 Node.js、安装到 `%LOCALAPPDATA%\Font Manage` 并创建桌面快捷方式；自包含单文件，无需安装 .NET。
 
 ## Build from source / 从源码构建
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1 (2026-11-26)
+
+- Fixed the Windows preview zip layout: the bundle now keeps `dist/win/` intact and CI verifies the packaged engine, shell and root installer after archiving. 修复 Windows 预览包目录层级，并在 CI 中回读校验。
+
 ## 1.1.0 (2026-11-26)
 
 - Family-grouped font cards: one card per family with a compact style dropdown; Regular/Normal is the default, while exact searches and host selections keep their exact PostScript face. 字体家族合并卡片，默认易读字款；精确搜索仍保持精确字款。
