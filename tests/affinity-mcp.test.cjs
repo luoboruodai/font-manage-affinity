@@ -3,7 +3,7 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const http = require('node:http');
 const { Readable } = require('node:stream');
-const { AffinityMCP, PROTOCOL_VERSION, toolText } = require('../server/affinity-mcp.cjs');
+const { AffinityMCP, DEFAULT_URL, PROTOCOL_VERSION, toolText } = require('../server/affinity-mcp.cjs');
 
 function fakeServer(t) {
   const sockets = new Set(), calls = [];
@@ -59,6 +59,10 @@ test('client performs the required handshake and calls a tool over the session e
   assert.equal(fake.calls[1].method, 'notifications/initialized');
   assert.equal(fake.calls[2].method, 'tools/list');
   assert.equal(fake.calls[3].params.name, 'execute_script');
+});
+
+test('default endpoint uses the IPv4 loopback exposed by Affinity', () => {
+  assert.equal(DEFAULT_URL, 'http://127.0.0.1:6767/sse');
 });
 
 test('non-loopback endpoints are refused before any network access', () => {

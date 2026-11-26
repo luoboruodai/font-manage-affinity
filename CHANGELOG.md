@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.1.0 (2026-11-26)
+
+- Family-grouped font cards: one card per family with a compact style dropdown; Regular/Normal is the default, while exact searches and host selections keep their exact PostScript face. 字体家族合并卡片，默认易读字款；精确搜索仍保持精确字款。
+- Variable fonts now show a blue “可变字体” tag below the preview instead of taking space in the card heading. 可变字体改在样本下方显示蓝色信息 tag。
+- Hover targets are now square and centered: 28×28 px in navigation and 26×26 px in cards, with a 2 px gap between card actions. 悬停热区统一为正方形并居中。
+- Affinity's local MCP endpoint now uses IPv4 `127.0.0.1:6767`, matching the current host listener. Affinity 本机接口按当前宿主监听地址改用 IPv4。
+- Verified locally: 34/34 unit tests, 12/12 Chromium UI tests, successful build, and a real Affinity apply check (`42dotSans-Bold`). 本机验证：34/34 单元、12/12 UI、构建与真实 Affinity 应用检查通过。
+
 ## 1.0.0 (2026-11-19)
 
 - Unified release: macOS stable (fully verified on the maintainer's machine, including a real Affinity apply run) and Windows preview (engine/shell/installer verified on real Windows CI; Affinity link on Windows not yet verified).

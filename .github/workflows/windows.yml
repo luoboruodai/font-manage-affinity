@@ -77,15 +77,19 @@ jobs:
       - name: Package Windows preview bundle
         shell: pwsh
         run: |
-          Compress-Archive -Path dist/win,server,web,config,scripts,src,package.json,README.md,LICENSE -DestinationPath Font-Manage-1.0.0-windows-alpha.zip -Force
-          Compress-Archive -Path scripts/install-windows.bat -DestinationPath Font-Manage-1.0.0-windows-alpha.zip -Update
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          $zip = "Font-Manage-$version-windows-alpha.zip"
+          "ZIP=$zip" >> $env:GITHUB_ENV
+          "VERSION=$version" >> $env:GITHUB_ENV
+          Compress-Archive -Path dist/win,server,web,config,scripts,src,package.json,README.md,LICENSE -DestinationPath $zip -Force
+          Compress-Archive -Path scripts/install-windows.bat -DestinationPath $zip -Update
       - uses: actions/upload-artifact@v4
         with:
-          name: Font-Manage-1.0.0-windows-alpha
-          path: Font-Manage-1.0.0-windows-alpha.zip
+          name: Font-Manage-${{ env.VERSION }}-windows-alpha
+          path: ${{ env.ZIP }}
       - name: Publish prerelease
         if: startsWith(github.ref, 'refs/tags/')
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create ${{ github.ref_name }} Font-Manage-1.0.0-windows-alpha.zip --prerelease --title "Font Manage ${{ github.ref_name }} (Windows preview)" --notes-file release-notes-windows.md || gh release upload ${{ github.ref_name }} Font-Manage-1.0.0-windows-alpha.zip --clobber
+          gh release create ${{ github.ref_name }} $env:ZIP --prerelease --title "Font Manage ${{ github.ref_name }} (Windows preview)" --notes-file release-notes-windows.md || gh release upload ${{ github.ref_name }} $env:ZIP --clobber

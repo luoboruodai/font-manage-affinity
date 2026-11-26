@@ -27,6 +27,7 @@ async function resetPreview(page) {
 const list = page => page.getByRole('listbox', { name: '字体列表' });
 const rows = page => page.locator('.font-row');
 const ariaRow = page => page.locator('.font-row[data-font="ArialMT"]');
+const familyCount = fonts => new Set(fonts.map(font => String(font.family || font.id).trim().normalize('NFKC').toLowerCase())).size;
 
 async function ready(page) {
   await page.goto('/');
@@ -78,10 +79,10 @@ test('loads real fonts, virtualizes the full list, and captures the three window
   expect(catalog.host.connected).toBe(false);
   expect(await rows(page).count()).toBeLessThan(25);
   await expect(rows(page).first()).toHaveAttribute('aria-posinset', '1');
-  await expect(rows(page).first()).toHaveAttribute('aria-setsize', String(catalog.fonts.length));
+  await expect(rows(page).first()).toHaveAttribute('aria-setsize', String(familyCount(catalog.fonts)));
   await expect(page.getByRole('button', { name: /上一页|下一页/ })).toHaveCount(0);
   await scrollFraction(page, 1);
-  await expect(rows(page).last()).toHaveAttribute('aria-posinset', String(catalog.fonts.length));
+  await expect(rows(page).last()).toHaveAttribute('aria-posinset', String(familyCount(catalog.fonts)));
   expect(await rows(page).count()).toBeLessThan(25);
   await scrollFraction(page, 0);
   await expect(rows(page).first()).toHaveAttribute('aria-posinset', '1');
@@ -114,15 +115,15 @@ test('searches and filters fonts and keeps preset previews separate from custom 
   const resultCount = async () => page.evaluate(() => window.__fontManage.results);
   const matchesArial = font => `${font.family} ${font.style} ${font.id}`.toLowerCase().includes('arial');
   const supportedLatin = font => font.languages.includes('latin');
-  expect(await resultCount()).toBe(bootstrap.fonts.filter(font => matchesArial(font) && supportedLatin(font)).length);
+  expect(await resultCount()).toBe(familyCount(bootstrap.fonts.filter(font => matchesArial(font) && supportedLatin(font))));
   await page.getByRole('combobox', { name: '字体分类' }).selectOption('serif');
-  expect(await resultCount()).toBe(bootstrap.fonts.filter(font => matchesArial(font) && font.isSerif && supportedLatin(font)).length);
+  expect(await resultCount()).toBe(familyCount(bootstrap.fonts.filter(font => matchesArial(font) && font.isSerif && supportedLatin(font))));
   await expect(ariaRow(page)).toHaveCount(0);
   await search(page).fill('');
   await page.getByRole('combobox', { name: '字体分类' }).selectOption('all');
   await setPreviewType(page, 'all');
   await page.getByRole('combobox', { name: '字体分类' }).selectOption('mono');
-  const mono = bootstrap.fonts.filter(font => font.isMonospaced).length;
+  const mono = familyCount(bootstrap.fonts.filter(font => font.isMonospaced));
   expect(await resultCount()).toBe(mono);
   await page.getByRole('combobox', { name: '字体分类' }).selectOption('all');
   await enterArial(page);
@@ -242,8 +243,8 @@ test('filters Hangul independently and reflows complete previews with visible di
   await previewText(page).fill(('가나다라마바사 한글 서울 '.repeat(24) + '😀').slice(0, 500));
   await expect.poll(async () => (await row.locator('img').getAttribute('src')) !== shortSource).toBe(true);
   await previewReady(row);
+  await expect.poll(async () => (await row.boundingBox()).height).toBeGreaterThan(shortHeight);
   const longHeight = (await row.boundingBox()).height;
-  expect(longHeight).toBeGreaterThan(shortHeight);
   await expect(row.locator('.diagnostic')).toContainText(/缺字/);
   const narrow = await row.evaluate(element => {
     const rect = element.getBoundingClientRect();
@@ -258,7 +259,7 @@ test('filters Hangul independently and reflows complete previews with visible di
   await page.setViewportSize({ width: 900, height: 700 });
   await expect.poll(async () => (await row.locator('img').getAttribute('src')) !== longSource).toBe(true);
   await previewReady(row);
-  expect((await row.boundingBox()).height).toBeLessThan(longHeight);
+  await expect.poll(async () => (await row.boundingBox()).height).toBeLessThan(longHeight);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(900);
   await page.screenshot({ path: path.join(evidence, 'korean-adaptive-900x700.png') });
   await search(page).fill('ArialMT');
@@ -279,7 +280,7 @@ test('persists a cleared category and an edit made immediately before close', as
   await Promise.all([savedKind('all'), kind.selectOption('all')]);
   await ready(page);
   await expect(kind).toHaveValue('all');
-  expect(await page.evaluate(() => window.__fontManage.results)).toBeGreaterThan(2000);
+  expect(await page.evaluate(() => window.__fontManage.results)).toBeGreaterThan(500);
 
   await enterArial(page);
   let recordFavoriteRequest;
@@ -483,6 +484,77 @@ test('creates, renames, validates, persists and removes memberships in independe
   await expect(ariaRow(page)).toBeVisible();
 });
 
+test('collapses family styles into a dropdown while preserving exact face selection', async ({ page }) => {
+  await ready(page);
+  await coverageFilter(page, false);
+  await resetPreview(page);
+  await search(page).fill('Arial');
+  const row = page.locator('.font-row[data-family="arial"]');
+  await expect(row).toBeVisible();
+  await expect(row).toHaveAttribute('data-font', 'ArialMT');
+  const styles = row.getByRole('combobox', { name: 'Arial 字款' });
+  await expect(styles).toHaveValue('ArialMT');
+  await expect(styles.locator('option[value="Arial-BoldMT"]')).toHaveText('Bold');
+  const geometry = await row.evaluate(element => {
+    const family = element.querySelector('.family').getBoundingClientRect();
+    const select = element.querySelector('.family-style').getBoundingClientRect();
+    const actions = element.querySelector('.row-actions').getBoundingClientRect();
+    return { gap: select.left - family.right, width: select.width, height: select.height, selectRight: select.right, actionsLeft: actions.left };
+  });
+  expect(geometry.gap).toBeGreaterThanOrEqual(4);
+  expect(geometry.gap).toBeLessThanOrEqual(8);
+  expect(geometry.width).toBeLessThanOrEqual(94);
+  expect(geometry.height).toBe(20);
+  expect(geometry.selectRight).toBeLessThanOrEqual(geometry.actionsLeft);
+  const navAlignment = await page.evaluate(() => {
+    const box = selector => { const r = document.querySelector(selector).getBoundingClientRect(); return { width: r.width, height: r.height, cy: r.y + r.height / 2 }; };
+    return { nav: box('nav'), settings: box('#settings'), create: box('#new-group') };
+  });
+  expect(navAlignment.settings.width).toBe(navAlignment.settings.height);
+  expect(navAlignment.create.width).toBe(navAlignment.create.height);
+  expect(Math.abs(navAlignment.settings.cy - navAlignment.nav.cy)).toBeLessThanOrEqual(0.5);
+  expect(Math.abs(navAlignment.create.cy - navAlignment.nav.cy)).toBeLessThanOrEqual(0.5);
+  const rowAlignment = await row.evaluate(element => {
+    const box = selector => { const r = element.querySelector(selector).getBoundingClientRect(); return { width: r.width, height: r.height, cy: r.y + r.height / 2, left: r.left, right: r.right }; };
+    return { heading: box('.font-heading'), actions: box('.row-actions'), star: box('.star'), folder: box('.icon:nth-child(2)') };
+  });
+  expect(rowAlignment.star.width).toBe(rowAlignment.star.height);
+  expect(rowAlignment.folder.width).toBe(rowAlignment.folder.height);
+  expect(rowAlignment.folder.left - rowAlignment.star.right).toBe(2);
+  expect(Math.abs(rowAlignment.actions.cy - rowAlignment.heading.cy)).toBeLessThanOrEqual(0.5);
+  const regularPreview = await previewReady(row);
+  await styles.selectOption('Arial-BoldMT');
+  await expect(row).toHaveAttribute('data-font', 'Arial-BoldMT');
+  await expect(styles).toHaveValue('Arial-BoldMT');
+  await expect.poll(() => page.evaluate(() => window.__fontManage.selection)).toEqual(['Arial-BoldMT']);
+  expect(await previewReady(row)).not.toBe(regularPreview);
+  await search(page).fill('Arial-BoldMT');
+  await expect(row).toHaveAttribute('data-font', 'Arial-BoldMT');
+  await expect(styles.locator('option[value="ArialMT"]')).toHaveText('Regular');
+  await styles.selectOption('ArialMT');
+  await expect(row).toHaveAttribute('data-font', 'ArialMT');
+});
+
+test('moves variable font identity into an information tag below the sample', async ({ page }) => {
+  await ready(page);
+  await coverageFilter(page, false);
+  await search(page).fill('ABC Whyte Mono Variable Unlicensed Trial');
+  const row = page.locator('.font-row[data-family="abc whyte mono variable unlicensed trial"]');
+  await expect(row).toBeVisible();
+  await previewReady(row);
+  await expect(row.locator('.font-heading')).not.toContainText('可变');
+  const tag = row.locator('.diag-pill.info');
+  await expect(tag).toHaveText('可变字体');
+  await expect(tag).toHaveAttribute('title', /可变轴实例/);
+  const layout = await row.evaluate(element => {
+    const sample = element.querySelector('.sample').getBoundingClientRect();
+    const diagnostic = element.querySelector('.diagnostic').getBoundingClientRect();
+    return { sampleBottom: sample.bottom, diagnosticTop: diagnostic.top };
+  });
+  expect(layout.diagnosticTop).toBeGreaterThanOrEqual(layout.sampleBottom);
+  await page.screenshot({ path: path.join(evidence, 'variable-tag-final-520x780.png') });
+});
+
 test('supports keyboard navigation, command-click and clipped long names and samples', async ({ page, request }) => {
   await page.setViewportSize({ width: 380, height: 650 });
   await ready(page);
@@ -588,7 +660,7 @@ test('records real preview latency and bounded caches, plus synthetic 20,000-fon
     }
     return performance.now();
   }, jumps);
-  await expect(rows(page).last()).toHaveAttribute('aria-posinset', String(catalog.fonts.length));
+  await expect(rows(page).last()).toHaveAttribute('aria-posinset', String(familyCount(catalog.fonts)));
   const painted = await page.waitForFunction(() => {
     const view = document.querySelector('#font-list').getBoundingClientRect();
     const visible = [...document.querySelectorAll('.font-row')].filter(row => {

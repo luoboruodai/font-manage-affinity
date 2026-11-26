@@ -29,3 +29,41 @@ test('virtual rows stay bounded and ordered for twenty thousand variable rows', 
   assert.ok(range.start > 0 && range.end > range.start && range.end - range.start < 30);
   assert.ok(layout.offset(range.start) <= layout.total / 2);
 });
+
+test('families collapse to one row and default to a screen-readable regular face', async () => {
+  const { groupFontFamilies, preferredScreenFace } = await import('../web/model.mjs');
+  const faces = [
+    { id: 'Demo-Bold', family: 'Demo', style: 'Bold' },
+    { id: 'Demo-Italic', family: 'Demo', style: 'Italic' },
+    { id: 'Demo-Regular', family: 'Demo', style: 'Regular' },
+    { id: 'Demo-Medium', family: 'Demo', style: 'Medium' }
+  ];
+  const grouped = groupFontFamilies(faces, faces);
+  assert.equal(grouped.length, 1);
+  assert.equal(grouped[0].id, 'Demo-Regular');
+  assert.equal(grouped[0].familyFaces.length, 4);
+  assert.equal(grouped[0].rowKey, 'family:demo');
+  assert.equal(preferredScreenFace([
+    { id: 'Light', family: 'Fallback', style: 'Light' },
+    { id: 'BoldItalic', family: 'Fallback', style: 'Bold Italic' },
+    { id: 'Medium', family: 'Fallback', style: 'Medium' },
+    { id: 'Condensed', family: 'Fallback', style: 'Condensed Regular' }
+  ]).id, 'Medium');
+});
+
+test('family choices and exact style searches select the intended PostScript face', async () => {
+  const { groupFontFamilies } = await import('../web/model.mjs');
+  const faces = [
+    { id: 'Demo-Regular', family: 'Demo', style: 'Regular' },
+    { id: 'Demo-Bold', family: 'Demo', style: 'Bold' },
+    { id: 'Other-Regular', family: 'Other', style: 'Regular' }
+  ];
+  const selected = groupFontFamilies(faces, faces, { selections: new Map([['demo', 'Demo-Bold']]) });
+  assert.equal(selected.find(face => face.familyKey === 'demo').id, 'Demo-Bold');
+  const exact = groupFontFamilies([faces[1]], faces);
+  assert.equal(exact.length, 1);
+  assert.equal(exact[0].id, 'Demo-Bold');
+  assert.deepEqual(exact[0].familyFaces.map(face => face.id), ['Demo-Regular', 'Demo-Bold']);
+  const switched = groupFontFamilies([faces[1]], faces, { selections: new Map([['demo', 'Demo-Regular']]) });
+  assert.equal(switched[0].id, 'Demo-Regular');
+});
